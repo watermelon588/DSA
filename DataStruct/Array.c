@@ -222,9 +222,111 @@ void RShift(struct Array *arr){
     }
     arr->A[0] = temp;
 }
+// Merge
+struct Array* Merge(struct Array *arr1,struct Array *arr2) {
+    int i,j,k;
+    i=j=k=0;
+    struct Array *arr3 = (struct Array *)malloc(sizeof(struct Array));
+    arr3->size = arr1->length + arr2->length +1;
+    arr3->A = (int *)malloc(arr3->size * sizeof(int));
+
+    while(i<arr1->length && j<arr2->length){
+        if(arr1->A[i]<arr2->A[j]){
+            arr3->A[k++]=arr1->A[i++];
+        }else{
+            arr3->A[k++]=arr2->A[j++];
+        }
+    }
+    for(;i<arr1->length;i++){
+        arr3->A[k++]=arr1->A[i];
+    }
+    for(;j<arr2->length;j++){
+        arr3->A[k++]=arr2->A[j];
+    }
+    arr3->length=k;
+    return arr3;
+}
+// Union
+struct Array* Union(struct Array *arr1,struct Array *arr2) {
+    int i,j,k;
+    i=j=k=0;
+    struct Array *arr3 = (struct Array *)malloc(sizeof(struct Array));
+    arr3->size = arr1->length + arr2->length +1;
+    arr3->A = (int *)malloc(arr3->size * sizeof(int));
+
+    while(i<arr1->length && j<arr2->length){
+        if(arr1->A[i]<arr2->A[j]){    
+            arr3->A[k++]=arr1->A[i++];
+        }
+        else if(arr1->A[i]>arr2->A[j]){
+            arr3->A[k++]=arr2->A[j++];
+        }
+        else{         // if -> arr1->A[i] == arr2->A[j]  --> skip !
+            arr3->A[k++]=arr1->A[i++];
+            j++;
+        }
+    }
+    for(;i<arr1->length;i++){
+        arr3->A[k++]=arr1->A[i];
+    }
+    for(;j<arr2->length;j++){
+        arr3->A[k++]=arr2->A[j];
+    }
+    arr3->length=k;
+    return arr3;
+}
+// Intersection
+struct Array* Intersection(struct Array *arr1,struct Array *arr2) {
+    int i,j,k;
+    i=j=k=0;
+    struct Array *arr3 = (struct Array *)malloc(sizeof(struct Array));
+    arr3->size = arr1->length + arr2->length +1;
+    arr3->A = (int *)malloc(arr3->size * sizeof(int));
+
+    while(i<arr1->length && j<arr2->length){
+        if(arr1->A[i]<arr2->A[j]){
+            i++;
+        }else if(arr1->A[i]>arr2->A[j]){             
+            j++;
+        }
+        else{            // if -> arr1->A[i] == arr2->A[j]  --> keep !
+            arr3->A[k++]=arr1->A[i++];
+            j++;
+        }
+    }
+    arr3->length=k;
+    return arr3;
+}
+// Difference
+struct Array* Difference(struct Array *arr1,struct Array *arr2) {
+    int i,j,k;
+    i=j=k=0;
+    struct Array *arr3 = (struct Array *)malloc(sizeof(struct Array));
+    arr3->size = arr1->length + arr2->length +1;
+    arr3->A = (int *)malloc(arr3->size * sizeof(int));
+
+    while(i<arr1->length && j<arr2->length){
+        if(arr1->A[i]<arr2->A[j]){
+            arr3->A[k++]=arr1->A[i++];
+        }else if(arr1->A[i]>arr2->A[j]){    // Don't copy second array  --> skip !
+            j++;
+        }else{
+            i++;
+            j++;        // if -> arr1->A[i] == arr2->A[j]  --> skip !
+        }
+    }
+    for(;i<arr1->length;i++){
+        arr3->A[k++]=arr1->A[i];
+    }
+    for(;j<arr2->length;j++){
+        arr3->A[k++]=arr2->A[j];
+    }
+    arr3->length=k;
+    return arr3;
+}
 int main()
 {
-    struct Array arr;
+    struct Array arr, arr1 , arr2 , *mergedArr ,*UnionArr, *IntersectionArr, *DiffArr;
     int i, n, choice, x, pos,key,ele,S;
     char y,shiftcase;
     printf("Enter the size of the array : ");
@@ -267,10 +369,14 @@ int main()
         printf("12. Sum \n");
         printf("13. Average \n");
         printf("14. Shift/Rotate \n");
-        printf("15. exit \n");
-        printf("__________________________________________\n");
-        printf("Enter choice : ");
-        printf("\n__________________________________________\n");
+        printf("_______ 2 Arrays _______\n");
+        printf("15. Merge (2 sorted Arr) \n");
+        printf("16. Union (2 sorted Arr) \n");
+        printf("17. Intersection (2 sorted Arr) \n");
+        printf("18. Difference (2 sorted Arr) \n");
+        printf("19. exit \n");
+        printf("\n_________________________________________________________________________\n");
+        printf("\nEnter choice : ");
         scanf("%d", &choice);
         switch (choice)
         {
@@ -278,6 +384,7 @@ int main()
             printf("Enter element : ");
             scanf("%d", &x);
             append(&arr, x);
+            printf("\n_________________________________________________________________________\n");
             break;
         case 2:
             printf("Enter position : ");
@@ -285,6 +392,7 @@ int main()
             printf("Enter element : ");
             scanf("%d", &x);
             insert(&arr, pos, x);
+            printf("\n_________________________________________________________________________\n");
             break;
         case 3:
             printf("Enter position : ");
@@ -299,10 +407,12 @@ int main()
             {
                 printf("Invalid position!\n");
             }
+            printf("\n_________________________________________________________________________\n");
             break;
         case 4:
             printf("Array : \n");
             display(arr);
+            printf("\n_________________________________________________________________________\n");
             break;
         case 5:
             printf("Enter key value : ");
@@ -313,6 +423,7 @@ int main()
             }else{
                 printf("%d found at position %d",key,searched);
             }
+            printf("\n_________________________________________________________________________\n");
             break;
         case 6:
             printf("Enter key value : ");
@@ -323,11 +434,13 @@ int main()
             }else{
                 printf("%d found at position %d",key,Bsearched);
             }
+            printf("\n_________________________________________________________________________\n");
             break;
         case 7:
             Reverse(&arr);
             printf("Reversed array : ");
             display(arr);
+            printf("\n_________________________________________________________________________\n");
             break;
         case 8:
             printf("Enter position : ");
@@ -338,6 +451,7 @@ int main()
             }else{
                 printf("Element on index %d is : %d",pos,ele);
             }
+            printf("\n_________________________________________________________________________\n");
             break;
         case 9:
             printf("Enter position : ");
@@ -350,18 +464,23 @@ int main()
             }else{
                 printf("New element %d is set on index %d",key,pos);
             }
+            printf("\n_________________________________________________________________________\n");
             break;
         case 10:
             printf("Minimun value of array is : %d", minimum(arr));
+            printf("\n_________________________________________________________________________\n");
             break;
         case 11:
             printf("Maximun value of array is : %d", maximum(arr));
+            printf("\n_________________________________________________________________________\n");
             break;
         case 12:
             printf("Sum of elements in array is : %d", Sum(arr));
+            printf("\n_________________________________________________________________________\n");
             break;
         case 13:
             printf("Average value in array is : %.2lf", Avg(arr));
+            printf("\n_________________________________________________________________________\n");
             break;
         case 14:
             do{
@@ -381,14 +500,117 @@ int main()
                     printf("Enter valid character !\n");
                 }
             }while(S == 0);
+            printf("\n_________________________________________________________________________\n");
             break;
         case 15:
+            printf("Provide 2 SORTED arrays !\n");
+            printf("Enter the size of the array 1 : ");
+            scanf("%d", &arr1.size);
+            arr1.A = (int *)malloc(arr1.size * sizeof(int));
+            arr1.length = arr1.size;
+            printf("Enter elements Arr 1: \n");
+            for (i = 0; i < arr1.length; i++)
+            {
+                scanf("%d", &arr1.A[i]);
+            };
+            printf("Enter the size of the array 2 : ");
+            scanf("%d", &arr2.size);
+            arr2.A = (int *)malloc(arr2.size * sizeof(int));
+            arr2.length = arr2.size;
+            printf("Enter elements Arr 2: \n");
+            for (i = 0; i < arr2.length; i++)
+            {
+                scanf("%d", &arr2.A[i]);
+            };
+            mergedArr = Merge(&arr1,&arr2);  // pointer
+            printf("New merged array :  ");
+            display(*mergedArr);  // call by value
+            printf("\n_________________________________________________________________________\n");
+            break;
+        case 16:
+            printf("Provide 2 SORTED arrays !\n");
+            printf("Enter the size of the array 1 : ");
+            scanf("%d", &arr1.size);
+            arr1.A = (int *)malloc(arr1.size * sizeof(int));
+            arr1.length = arr1.size;
+            printf("Enter elements Arr 1: \n");
+            for (i = 0; i < arr1.length; i++)
+            {
+                scanf("%d", &arr1.A[i]);
+            };
+            printf("Enter the size of the array 2 : ");
+            scanf("%d", &arr2.size);
+            arr2.A = (int *)malloc(arr2.size * sizeof(int));
+            arr2.length = arr2.size;
+            printf("Enter elements Arr 2: \n");
+            for (i = 0; i < arr2.length; i++)
+            {
+                scanf("%d", &arr2.A[i]);
+            };
+            UnionArr = Union(&arr1,&arr2);  // pointer
+            printf("Union of both the arrays :  ");
+            display(*UnionArr);  // call by value
+            printf("\n_________________________________________________________________________\n");
+            break;
+        case 17:
+            printf("Provide 2 SORTED arrays !\n");
+            printf("Enter the size of the array 1 : ");
+            scanf("%d", &arr1.size);
+            arr1.A = (int *)malloc(arr1.size * sizeof(int));
+            arr1.length = arr1.size;
+            printf("Enter elements Arr 1: \n");
+            for (i = 0; i < arr1.length; i++)
+            {
+                scanf("%d", &arr1.A[i]);
+            };
+            printf("Enter the size of the array 2 : ");
+            scanf("%d", &arr2.size);
+            arr2.A = (int *)malloc(arr2.size * sizeof(int));
+            arr2.length = arr2.size;
+            printf("Enter elements Arr 2: \n");
+            for (i = 0; i < arr2.length; i++)
+            {
+                scanf("%d", &arr2.A[i]);
+            };
+            IntersectionArr = Intersection(&arr1,&arr2);  // pointer
+            printf("Intersection of both the arrays :  ");
+            display(*IntersectionArr);  // call by value
+            printf("\n_________________________________________________________________________\n");
+            break;
+        case 18:
+            printf("Provide 2 SORTED arrays !\n");
+            printf("Enter the size of the array 1 : ");
+            scanf("%d", &arr1.size);
+            arr1.A = (int *)malloc(arr1.size * sizeof(int));
+            arr1.length = arr1.size;
+            printf("Enter elements Arr 1: \n");
+            for (i = 0; i < arr1.length; i++)
+            {
+                scanf("%d", &arr1.A[i]);
+            };
+            printf("Enter the size of the array 2 : ");
+            scanf("%d", &arr2.size);
+            arr2.A = (int *)malloc(arr2.size * sizeof(int));
+            arr2.length = arr2.size;
+            printf("Enter elements Arr 2: \n");
+            for (i = 0; i < arr2.length; i++)
+            {
+                scanf("%d", &arr2.A[i]);
+            };
+            DiffArr = Difference(&arr1,&arr2);  // pointer
+            printf("Difference of both the arrays :  ");
+            display(*DiffArr);  // call by value
+            printf("\n_________________________________________________________________________\n");
+            break;
+        case 19:
             printf("Exitting ...");
+            printf("\n_________________________________________________________________________\n");
             break;
         default:
             printf("Invalid choice !");
+            printf("\n_________________________________________________________________________\n");
             break;
         }
-    } while (choice != 15);
+    } while (choice != 19);
     return 0;
 }
