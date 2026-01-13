@@ -1,6 +1,7 @@
 // Array ADT
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 // Array struct
 struct Array
 {
@@ -89,17 +90,143 @@ int linearSearch(struct Array *arr, int key){
     int i,found=-1;
     for(i=0;i<arr->length;i++){
         if(key == arr->A[i]){
-            swap (&arr->A[i],&arr->A[i-1]);
+            if(i!=0){
+                swap (&arr->A[i],&arr->A[i-1]);
+            }
             found = i;
         }
     }
     return found;
 }
+//Binary search
+int binarySearch(struct Array arr, int key){
+    int low,high,mid;
+    low = 0;
+    high = arr.length-1;
+    while(low <= high){
+        mid = (low+high)/2;
+        if(key == arr.A[mid]){
+            return mid;
+        }
+        else if (key < arr.A[mid]){
+            high = mid-1;
+        }
+        else{
+            low = mid+1;
+        }
+    }
+    return -1;
+}
+//Binary search (recursion)
+int RbinarySearch(struct Array arr,int l,int h, int key){
+    int mid ;
+    if(l <= h){
+        mid = (l+h)/2;
+        if(key == arr.A[mid]){
+            return mid;
+        }
+        else if (key < arr.A[mid]){
+            return RbinarySearch(arr,l,mid-1,key);
+        }
+        else{
+            return RbinarySearch(arr,mid+1,h,key);
+        }
+    }
+    return -1;
+}
+// Get , Set , Min , Max 
+int get (struct Array arr, int pos){
+    if(pos>=0 && pos < arr.length){
+        return arr.A[pos];
+    }
+    return -1;
+}
+int set (struct Array *arr, int pos, int val){
+    if(pos>=0 && pos < arr->length){
+        arr->A[pos] = val;
+        return 1;
+    }else{
+        return -1;
+    }
+}
+int minimum (struct Array arr){
+    int i,min;
+    min = arr.A[0];
+    if(arr.length >= 0){
+        for(i=1;i<arr.length;i++){
+        if(arr.A[i]<min){
+            min = arr.A[i];
+        }
+        }
+        return min;
+    }else{
+        return 0;
+    }
+}
+int maximum (struct Array arr){
+    int i,max;
+    max = arr.A[0];
+    if(arr.length >= 0){
+        for(i=1;i<arr.length;i++){
+        if(arr.A[i]>max){
+            max = arr.A[i];
+        }
+        }
+        return max;
+    }else{
+        return 0;
+    }
+}
+// Sum , Avg
+int Sum (struct Array arr){
+    int i,sum;
+    sum = 0;
+    for(i=0;i<arr.length;i++){
+        sum += arr.A[i];
+    }
+    return sum;
+}
+double Avg (struct Array arr){
+    int i ;
+    double sum = 0.0000;
+    for(i=0;i<arr.length;i++){
+        sum += arr.A[i];
+    }
+    double avg = (sum/arr.length);
+    return avg;
+}
+void Reverse(struct Array *arr){
+    int i,j;
+    for(i=0,j=arr->length-1;i<j;i++,j--){
+        swap(&arr->A[i],&arr->A[j]);
+    }
+}
+int handleShift(char shiftcase){
+    if(toupper(shiftcase) == 'L'){return 1;}
+    else if(toupper(shiftcase) == 'R'){return 2;}
+    else{return 0;}
+}
+void LShift(struct Array *arr){
+    int i,temp;
+    temp = arr->A[0];
+    for(i=0;i<arr->length-1;i++){
+        arr->A[i] = arr->A[i+1];
+    }
+    arr->A[arr->length-1] = temp;
+}
+void RShift(struct Array *arr){
+    int i,temp;
+    temp = arr->A[arr->length-1];
+    for(i=arr->length-1;i>=0;i--){
+        arr->A[i] = arr->A[i-1];
+    }
+    arr->A[0] = temp;
+}
 int main()
 {
     struct Array arr;
-    int i, n, choice, x, pos,key;
-    char y;
+    int i, n, choice, x, pos,key,ele,S;
+    char y,shiftcase;
     printf("Enter the size of the array : ");
     scanf("%d", &arr.size);
     arr.A = (int *)malloc(arr.size * sizeof(int));
@@ -129,10 +256,21 @@ int main()
         printf("1. Append element \n");
         printf("2. Insert element (0 base indexing )\n");
         printf("3. Delete element (0 base indexing )\n");
-        printf("4. Linear search (transposed)\n");
-        printf("5. Display array \n");
-        printf("6. exit \n");
+        printf("4. Display array\n");
+        printf("5. Linear search(Transposed) \n");
+        printf("6. Binary search (sorted list) \n");
+        printf("7. Reverse \n");
+        printf("8. Get \n");
+        printf("9. Set \n");
+        printf("10. Minimum \n");
+        printf("11. Maximum \n");
+        printf("12. Sum \n");
+        printf("13. Average \n");
+        printf("14. Shift/Rotate \n");
+        printf("15. exit \n");
+        printf("__________________________________________\n");
         printf("Enter choice : ");
+        printf("\n__________________________________________\n");
         scanf("%d", &choice);
         switch (choice)
         {
@@ -163,6 +301,10 @@ int main()
             }
             break;
         case 4:
+            printf("Array : \n");
+            display(arr);
+            break;
+        case 5:
             printf("Enter key value : ");
             scanf("%d", &key);
             int searched = linearSearch(&arr,key);
@@ -172,17 +314,81 @@ int main()
                 printf("%d found at position %d",key,searched);
             }
             break;
-        case 5:
-            printf("Array : \n");
+        case 6:
+            printf("Enter key value : ");
+            scanf("%d", &key);
+            int Bsearched = binarySearch(arr,key);
+            if(Bsearched == -1){
+                printf("%d not found !",key);
+            }else{
+                printf("%d found at position %d",key,Bsearched);
+            }
+            break;
+        case 7:
+            Reverse(&arr);
+            printf("Reversed array : ");
             display(arr);
             break;
-        case 6:
+        case 8:
+            printf("Enter position : ");
+            scanf("%d", &pos);
+            ele = get(arr,pos);
+            if(ele == -1){
+                printf("Invalid position !",key);
+            }else{
+                printf("Element on index %d is : %d",pos,ele);
+            }
+            break;
+        case 9:
+            printf("Enter position : ");
+            scanf("%d", &pos);
+            printf("Enter new value : ");
+            scanf("%d", &key);
+            int setele = set(&arr,pos,key);
+            if(setele == -1){
+                printf("Invalid position !",key);
+            }else{
+                printf("New element %d is set on index %d",key,pos);
+            }
+            break;
+        case 10:
+            printf("Minimun value of array is : %d", minimum(arr));
+            break;
+        case 11:
+            printf("Maximun value of array is : %d", maximum(arr));
+            break;
+        case 12:
+            printf("Sum of elements in array is : %d", Sum(arr));
+            break;
+        case 13:
+            printf("Average value in array is : %.2lf", Avg(arr));
+            break;
+        case 14:
+            do{
+                printf("Left shift <- or Right Shift -> ?\n");
+                printf("L/R ? :");
+                scanf(" %c", &shiftcase);
+                S = handleShift(shiftcase);
+                if(S == 1){
+                    LShift(&arr);
+                    printf("Elements shifted by unit 1: \n");
+                    display(arr);
+                }else if(S == 2){
+                    RShift(&arr);
+                    printf("Elements shifted by unit 1: \n");
+                    display(arr);
+                }else{
+                    printf("Enter valid character !\n");
+                }
+            }while(S == 0);
+            break;
+        case 15:
             printf("Exitting ...");
             break;
         default:
             printf("Invalid choice !");
             break;
         }
-    } while (choice != 6);
+    } while (choice != 15);
     return 0;
 }
