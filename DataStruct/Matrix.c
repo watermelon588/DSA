@@ -1,0 +1,259 @@
+#include<stdio.h>
+#include<stdlib.h>
+//matrix creation
+struct Matrix{
+    int *A;
+    int n;
+    int size;
+};
+// Diagonal matrix ___________________________
+    // get
+    void get(struct Matrix mat,int pos[]){
+        int i = pos[0];
+        int j = pos[1];
+        if(i == 0 || j == 0){
+            printf("Not zero(0) base indexing !\n");
+            return;
+        }
+        if(i<=mat.n && j<=mat.n){
+            if (i==j){
+                printf("Element in (%d,%d) is : %d \n",i,j,mat.A[i-1]);
+            }else{
+                printf("Element in (%d,%d) is : %d \n",i,j,0);
+            }
+        }else{
+            printf("Position not found !\n");
+        }    
+    }
+    // display
+    void display(struct Matrix mat){
+        int i,j;
+        for(i=0;i<mat.n;i++){
+            for(j=0;j<mat.n;j++){
+                if(i==j){
+                    printf("%d ",mat.A[i]);
+                }else{
+                    printf("0 ");
+                }
+            }
+            printf("\n");
+        }
+        printf("\n");
+    }
+// Lower Triangular matrix ___________________________
+    // get
+    void Lowerget(struct Matrix mat,int pos[]){
+        int i = pos[0];
+        int j = pos[1];
+        int idx = i*(i-1)/2+(j-1);     // row major formula
+        if(i == 0 || j == 0){
+            printf("Not zero(0) base indexing !\n");
+            return;
+        }
+        if(i<=mat.n && j<=mat.n){
+            if (i>=j){
+                printf("Element in (%d,%d) is : %d \n",i,j,mat.A[idx]);
+            }else{
+                printf("Element in (%d,%d) is : %d \n",i,j,0);
+            }
+        }else{
+            printf("Position not found !\n");
+        }    
+    }
+    // display
+    void Lowerdisplay(struct Matrix mat){
+        int i,j,k=0;
+        for(i=0;i<mat.n;i++){
+            for(j=0;j<mat.n;j++){
+                if(i>=j){
+                    printf("%d ",mat.A[k++]);
+                }else{
+                    printf("0 ");
+                }
+            }
+            printf("\n");
+        }
+        printf("\n");
+    }
+// Upper Triangular matrix ___________________________
+    // get
+    void Upperget(struct Matrix mat,int pos[]){
+        int i = pos[0];
+        int j = pos[1];
+        int idx = j*(j-1)/2+(i-1);    // column major formula
+        if(i == 0 || j == 0){
+            printf("Not zero(0) base indexing !\n");
+            return;
+        }
+        if(i<=mat.n && j<=mat.n){
+            if (i<=j){
+                printf("Element in (%d,%d) is : %d \n",i,j,mat.A[idx]);
+            }else{
+                printf("Element in (%d,%d) is : %d \n",i,j,0);
+            }
+        }else{
+            printf("Position not found !\n");
+        }    
+    }
+    // display
+    void Upperdisplay(struct Matrix mat){
+        int i,j,k=0;
+        for(i=0;i<mat.n;i++){
+            for(j=0;j<mat.n;j++){
+                if(j>=i){
+                    printf("%d ",mat.A[k++]);
+                }else{
+                    printf("0 ");
+                }
+            }
+            printf("\n");
+        }
+        printf("\n");
+    }
+int main(){
+    int i,choice,n,pos[2],no_ele;
+    struct Matrix mat;
+    printf("Enter size of matrix for memory allocation:");
+    scanf("%d",&mat.size);
+    mat.A = (int *)malloc(mat.size * sizeof(int));
+    do{
+        printf("\n________________ MENU _________________\n");
+        printf("1. Diagonal Matrix \n");
+        printf("2. Lower Triangular Matrix\n");
+        printf("3. Upper Triangular Matrix\n");
+        printf("4. Symmetric Matrix\n");
+        printf("5. Tridiagonal Matrix \n");
+        printf("6. Band Matrix\n");
+        printf("7. Toeplitz Matrix\n");
+        printf("8. Sparse Matrix \n");
+        printf("9. Exit \n");
+        printf("\n_________________________________________________________________________\n");
+        printf("Enter choice : ");
+        scanf("%d", &choice);
+        getchar();
+        switch (choice)
+        {
+        case 1:
+            printf("Enter size of matrix :");
+            scanf("%d",&mat.n);
+            printf("Enter %d Diagonal elemets :",mat.n);
+            for(i=0;i<mat.n;i++){
+                scanf("%d",&mat.A[i]);
+            }
+            int ch0;
+            do{
+            printf("1. GET(1 base indexing) \n");
+            printf("2. DISPLAY \n");
+            printf("3. EXIT \n");
+            printf("Enter ( 1/2/3 )? :");
+            scanf("%d",&ch0);
+            
+                switch (ch0)
+                {
+                case 1:
+                    printf("Enter position (i , j):");
+                    for(i=0;i<2;i++){
+                        scanf("%d",&pos[i]);
+                    }
+                    get(mat,pos);
+                    break;
+                case 2:
+                    printf("Diagonal matrix : \n");
+                    display(mat);
+                    break;
+                case 3:
+                    printf("exiting diagonal matrix ...");
+                    break;
+                default:
+                    printf("Invalid input !\n");
+                    break;
+                }
+            }while(ch0!=3);
+            break;
+        case 2:
+            printf("Enter dimention of matrix :");
+            scanf("%d",&mat.n);
+            no_ele = mat.n*(mat.n+1)/2;
+            printf("Enter %d Non-zero elemets :",no_ele);
+            for(i=0;i<no_ele;i++){
+                scanf("%d",&mat.A[i]);
+            }
+            int ch1;
+            do{
+            printf("1. GET(1 base indexing) \n");
+            printf("2. DISPLAY \n");
+            printf("3. EXIT \n");
+            printf("Enter ( 1/2/3 )? :");
+            scanf("%d",&ch1);
+            
+                switch (ch1)
+                {
+                case 1:
+                    printf("Enter position (i , j):");
+                    for(i=0;i<2;i++){
+                        scanf("%d",&pos[i]);
+                    }
+                    Lowerget(mat,pos);
+                    break;
+                case 2:
+                    printf("Lower Triangular matrix : \n");
+                    Lowerdisplay(mat);
+                    break;
+                case 3:
+                    printf("exiting Lower triangular matrix ...");
+                    break;
+                default:
+                    printf("Invalid input !\n");
+                    break;
+                }
+            }while(ch1!=3);
+            break;
+        case 3:
+            printf("Enter dimention of matrix :");
+            scanf("%d",&mat.n);
+            no_ele = mat.n*(mat.n+1)/2;
+            printf("Enter %d Non-zero elemets :",no_ele);
+            for(i=0;i<no_ele;i++){
+                scanf("%d",&mat.A[i]);
+            }
+            int ch2;
+            do{
+            printf("1. GET(1 base indexing) \n");
+            printf("2. DISPLAY \n");
+            printf("3. EXIT \n");
+            printf("Enter ( 1/2/3 )? :");
+            scanf("%d",&ch2);
+            
+                switch (ch2)
+                {
+                case 1:
+                    printf("Enter position (i , j):");
+                    for(i=0;i<2;i++){
+                        scanf("%d",&pos[i]);
+                    }
+                    Upperget(mat,pos);
+                    break;
+                case 2:
+                    printf("Upper triangular matrix : \n");
+                    Upperdisplay(mat);
+                    break;
+                case 3:
+                    printf("exiting Upper Triangular matrix ...");
+                    break;
+                default:
+                    printf("Invalid input !\n");
+                    break;
+                }
+            }while(ch2!=3);
+            break;
+        case 9:
+            printf("Exitting ...\n");
+            break;
+        default:
+            printf("Invalid input !\n");
+            break;
+        }
+
+    }while(choice != 9);
+    return 0;
+}
