@@ -147,7 +147,7 @@ struct Matrix{
         }
         printf("\n");
     }
-// Tridiagonal Matrix
+// Tridiagonal Matrix ___________________________
     // get
     void Tridiagonalget(struct Matrix mat, int pos[]){
     int i = pos[0];
@@ -200,9 +200,50 @@ struct Matrix{
         printf("\n");
     }
     }
-
+// Sparse Matrix ________________________________
+    // structure
+    struct Element{
+        int i;
+        int j;
+        int x;
+    };
+    struct Sparse{
+        int m;
+        int n;
+        int num;
+        struct Element *ele;
+    };
+    // create sparse 
+    void createSparse(struct Sparse *s){
+        int i;
+        printf("Enter dimentions (m,n):");
+        scanf("%d%d",&s->m,&s->n);
+        s->ele = (struct Element*)malloc(s->num*sizeof(struct Element));
+        printf("Enter no. of elements:");
+        scanf("%d",&s->num);
+        printf("Enter %d elements with corresponding index (i,j,val):",s->num);{
+            for(i=0;i<s->num;i++){
+                scanf("%d%d%d",&s->ele[i].i,&s->ele[i].j,&s->ele[i].x);
+            }
+        }
+    };
+    // display
+    void Sparsedisplay(struct Sparse s){
+        int i,j,k=0;
+        for(i=0;i<s.m;i++){
+            for(j=0;j<s.n;j++){
+                if(i == s.ele[k].i && j == s.ele[k].j ){
+                    printf("%d ",s.ele[k++].x);
+                }else{
+                    printf("0 ");
+                }
+            }
+            printf("\n");
+        }
+    }
 int main(){
     int i,choice,n,pos[2],no_ele;
+    int ch5;
     struct Matrix mat;
     printf("Enter size of matrix for memory allocation:");
     scanf("%d",&mat.size);
@@ -214,10 +255,8 @@ int main(){
         printf("3. Upper Triangular Matrix\n");
         printf("4. Symmetric Matrix\n");
         printf("5. Tridiagonal Matrix \n");
-        printf("6. Band Matrix\n");
-        printf("7. Toeplitz Matrix\n");
-        printf("8. Sparse Matrix \n");
-        printf("9. Exit \n");
+        printf("6. Sparse Matrix \n");
+        printf("7. Exit \n");
         printf("\n_________________________________________________________________________\n");
         printf("Enter choice : ");
         scanf("%d", &choice);
@@ -421,7 +460,40 @@ int main(){
 
             } while(ch4 != 3);
             break;
-        case 9:
+        case 6:
+            do{
+                struct Sparse s;
+                createSparse(&s);
+                printf("\n1. GET (0 base indexing)\n");
+                printf("2. DISPLAY (0 base indexing)\n");
+                printf("3. ADD \n");
+                printf("4. EXIT\n");
+                printf("Enter (1/2/3)? : ");
+                scanf("%d", &ch5);
+
+                switch(ch5)
+                {
+                case 1:
+                    printf("Not ready yet !");
+                    break;
+                case 2:
+                    printf("Sparse matrix : \n");
+                    Sparsedisplay(s);
+                    break;
+                case 3:
+                    printf("Not ready yet !\n");
+                    break;
+                case 4:
+                    printf("Exiting Tridiagonal matrix...\n");
+                    break;
+                default:
+                    printf("Invalid input!\n");
+                    break;
+                }
+
+            } while(ch5 != 4);
+            break;
+        case 7:
             printf("Exitting ...\n");
             break;
         default:
@@ -429,6 +501,6 @@ int main(){
             break;
         }
 
-    }while(choice != 9);
+    }while(choice != 7);
     return 0;
 }
