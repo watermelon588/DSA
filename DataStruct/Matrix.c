@@ -110,6 +110,97 @@ struct Matrix{
         }
         printf("\n");
     }
+// symmetric matrix ___________________________
+    // get
+    void Symmetricget(struct Matrix mat,int pos[]){
+        int i = pos[0];
+        int j = pos[1];
+        int idx1 = i*(i-1)/2+(j-1);    // row major formula
+        int idx2 = j*(j-1)/2+(i-1);   // column major formula
+        if(i == 0 || j == 0){
+            printf("Not zero(0) base indexing !\n");
+            return;
+        }
+        if(i<=mat.n && j<=mat.n){
+            if (i<=j){
+                printf("Element in (%d,%d) is : %d \n",i,j,mat.A[idx2]);
+            }else{
+                printf("Element in (%d,%d) is : %d \n",i,j,mat.A[idx1]);
+            }
+        }else{
+            printf("Position not found !\n");
+        }    
+    }
+    // display
+    void Symmetricdisplay(struct Matrix mat){
+        int i,j,idx;
+        for(i=1;i<=mat.n;i++){
+            for(j=1;j<=mat.n;j++){
+                if(i<=j){
+                    idx = j*(j-1)/2 + (i-1);
+                }else {
+                    idx = i*(i-1)/2 + (j-1);
+                }
+                printf("%d ", mat.A[idx]);
+            }
+            printf("\n");
+        }
+        printf("\n");
+    }
+// Tridiagonal Matrix
+    // get
+    void Tridiagonalget(struct Matrix mat, int pos[]){
+    int i = pos[0];
+    int j = pos[1];
+    int idx;
+
+    if(i <= 0 || j <= 0 || i > mat.n || j > mat.n){
+        printf("Invalid position!\n");
+        return;
+    }
+
+    if(i - j == 1){ // lower diagonal
+        idx = i - 2;
+    }
+    else if(i == j){ // main diagonal
+        idx = (mat.n - 1) + (i - 1);
+    }
+    else if(j - i == 1){ // upper diagonal
+        idx = (2 * mat.n - 1) + (i - 1);
+    }
+    else{
+        printf("Element in (%d,%d) is: 0\n", i, j);
+        return;
+    }
+
+    printf("Element in (%d,%d) is: %d\n", i, j, mat.A[idx]);
+    }
+    // display
+    void Tridiagonaldisplay(struct Matrix mat){
+    int i, j, idx;
+
+    for(i = 1; i <= mat.n; i++){
+        for(j = 1; j <= mat.n; j++){
+            if(i - j == 1){
+                idx = i - 2;
+                printf("%d ", mat.A[idx]);
+            }
+            else if(i == j){
+                idx = (mat.n - 1) + (i - 1);
+                printf("%d ", mat.A[idx]);
+            }
+            else if(j - i == 1){
+                idx = (2 * mat.n - 1) + (i - 1);
+                printf("%d ", mat.A[idx]);
+            }
+            else{
+                printf("0 ");
+            }
+        }
+        printf("\n");
+    }
+    }
+
 int main(){
     int i,choice,n,pos[2],no_ele;
     struct Matrix mat;
@@ -245,6 +336,90 @@ int main(){
                     break;
                 }
             }while(ch2!=3);
+            break;
+        case 4:
+            printf("Enter dimention of matrix :");
+            scanf("%d",&mat.n);
+            no_ele = mat.n*(mat.n+1)/2;
+            printf("Enter %d Non-zero elemets :",no_ele);
+            for(i=0;i<no_ele;i++){
+                scanf("%d",&mat.A[i]);
+            }
+            int ch3;
+            do{
+            printf("1. GET(1 base indexing) \n");
+            printf("2. DISPLAY \n");
+            printf("3. EXIT \n");
+            printf("Enter ( 1/2/3 )? :");
+            scanf("%d",&ch3);
+            
+                switch (ch3)
+                {
+                case 1:
+                    printf("Enter position (i , j):");
+                    for(i=0;i<2;i++){
+                        scanf("%d",&pos[i]);
+                    }
+                    Symmetricget(mat,pos);
+                    break;
+                case 2:
+                    printf("Symmetric matrix : \n");
+                    Symmetricdisplay(mat);
+                    break;
+                case 3:
+                    printf("exiting Symmetric matrix ...");
+                    break;
+                default:
+                    printf("Invalid input !\n");
+                    break;
+                }
+            }while(ch3!=3);
+            break;
+        case 5:   
+            printf("Enter dimension of matrix : ");
+            scanf("%d", &mat.n);
+
+            no_ele = 3 * mat.n - 2;   // tridiagonal storage
+            mat.A = (int *)malloc(no_ele * sizeof(int));
+
+            printf("Enter %d non-zero elements : ", no_ele);
+            for(i = 0; i < no_ele; i++){
+                scanf("%d", &mat.A[i]);
+            }
+
+            int ch4;
+            do{
+                printf("\n1. GET (1 base indexing)\n");
+                printf("2. DISPLAY\n");
+                printf("3. EXIT\n");
+                printf("Enter (1/2/3)? : ");
+                scanf("%d", &ch4);
+
+                switch(ch4)
+                {
+                case 1:
+                    printf("Enter position (i , j): ");
+                    for(i = 0; i < 2; i++){
+                        scanf("%d", &pos[i]);
+                    }
+                    Tridiagonalget(mat, pos);
+                    break;
+
+                case 2:
+                    printf("Tridiagonal matrix : \n");
+                    Tridiagonaldisplay(mat);
+                    break;
+
+                case 3:
+                    printf("Exiting Tridiagonal matrix...\n");
+                    break;
+
+                default:
+                    printf("Invalid input!\n");
+                    break;
+                }
+
+            } while(ch4 != 3);
             break;
         case 9:
             printf("Exitting ...\n");
