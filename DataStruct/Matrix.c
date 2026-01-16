@@ -218,9 +218,9 @@ struct Matrix{
         int i;
         printf("Enter dimentions (m,n):");
         scanf("%d%d",&s->m,&s->n);
-        s->ele = (struct Element*)malloc(s->num*sizeof(struct Element));
         printf("Enter no. of elements:");
         scanf("%d",&s->num);
+        s->ele = (struct Element*)malloc(s->num*sizeof(struct Element));
         printf("Enter %d elements with corresponding index (i,j,val):",s->num);{
             for(i=0;i<s->num;i++){
                 scanf("%d%d%d",&s->ele[i].i,&s->ele[i].j,&s->ele[i].x);
@@ -232,7 +232,7 @@ struct Matrix{
         int i,j,k=0;
         for(i=0;i<s.m;i++){
             for(j=0;j<s.n;j++){
-                if(i == s.ele[k].i && j == s.ele[k].j ){
+                if(k < s.num && i == s.ele[k].i && j == s.ele[k].j){
                     printf("%d ",s.ele[k++].x);
                 }else{
                     printf("0 ");
@@ -240,6 +240,45 @@ struct Matrix{
             }
             printf("\n");
         }
+    }
+    // add
+    struct Sparse *addSparse(struct Sparse *s,struct Sparse *s1){
+        int i,j,k;
+        i=j=k=0;
+        struct Sparse *s3;
+        s3 = (struct Sparse*)malloc(sizeof(struct Sparse));
+        s3->ele=(struct Element*)malloc((s->num + s1->num)*sizeof(struct Element));
+        if(s->m != s1->m || s->n != s1->n){
+            printf("Different dimentions ! Cannot be added !");
+            return NULL;
+        }
+        while(i<s->num && j<s1->num){
+            // Row comparison
+            if(s->ele[i].i<s1->ele[j].i){
+                s3->ele[k++]=s->ele[i++];
+            }else if(s->ele[i].i>s1->ele[j].i){
+                s3->ele[k++]=s1->ele[j++];
+            }else{
+                // column comparison
+                if(s->ele[i].j<s1->ele[j].j){
+                    s3->ele[k++]=s->ele[i++];
+                }else if(s->ele[i].j>s1->ele[j].j){
+                    s3->ele[k++]=s1->ele[j++];
+                }else{
+                    // add if rows and columns are same
+                    s3->ele[k]=s->ele[i];
+                    s3->ele[k++].x=s->ele[i++].x+s1->ele[j++].x;
+                }
+            }
+            
+        }
+        // copy remaining elements if there 
+            for(;i<s->num;i++)s3->ele[k++]=s->ele[i];
+            for(;j<s1->num;j++)s3->ele[k++]=s1->ele[j];
+        s3->m = s->m;
+        s3->n = s->n;
+        s3->num = k;
+        return s3;
     }
 int main(){
     int i,choice,n,pos[2],no_ele;
@@ -464,26 +503,27 @@ int main(){
             do{
                 struct Sparse s;
                 createSparse(&s);
-                printf("\n1. GET (0 base indexing)\n");
+                printf("\n1. ADD (0 base indexing)\n");
                 printf("2. DISPLAY (0 base indexing)\n");
-                printf("3. ADD \n");
-                printf("4. EXIT\n");
+                printf("3. EXIT\n");
                 printf("Enter (1/2/3)? : ");
                 scanf("%d", &ch5);
 
                 switch(ch5)
                 {
                 case 1:
-                    printf("Not ready yet !");
+                    printf("Provide another sparse matrix !");
+                    struct Sparse s1,*s3;
+                    createSparse(&s1);
+                    s3=addSparse(&s,&s1);
+                    if(s3 != NULL)
+                        Sparsedisplay(*s3);
                     break;
                 case 2:
                     printf("Sparse matrix : \n");
                     Sparsedisplay(s);
                     break;
                 case 3:
-                    printf("Not ready yet !\n");
-                    break;
-                case 4:
                     printf("Exiting Tridiagonal matrix...\n");
                     break;
                 default:
@@ -491,7 +531,7 @@ int main(){
                     break;
                 }
 
-            } while(ch5 != 4);
+            } while(ch5 != 3);
             break;
         case 7:
             printf("Exitting ...\n");
