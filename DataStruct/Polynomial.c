@@ -20,9 +20,16 @@ void create(struct poly *p){
         scanf("%d%d",&p->t->coeff,&p->t->exp);
     }
 }
+void display(struct poly p){
+    int i;
+    for(i=0;i<p.n;i++){
+        printf("%dX%d",&p.t->coeff,&p.t->exp);
+    }
+    printf("\n");
+}
 int main(){
     int choice ,i,n;
-    struct poly *p;
+    struct poly p;
     do{
         printf("___________MENU_____________\n");
         printf("1. CREATE\n");
@@ -36,6 +43,8 @@ int main(){
         switch (choice)
         {
         case 1:
+            create(&p);
+            display(p);
             break;
         case 2:
             break;
