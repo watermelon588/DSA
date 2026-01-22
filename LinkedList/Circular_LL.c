@@ -7,6 +7,7 @@ struct Node {
     struct Node *next;
 };
 struct Node *head = NULL;
+// create 
 void create(){
     int i,n,arr[25];
     struct Node *last;
@@ -48,7 +49,20 @@ int count(){
 
     return cnt;
 }
+// sum
+int Sum(){
+    if(head == NULL) return 0;
 
+    int s = 0;
+    struct Node *temp = head;
+
+    do{
+        s+=temp->data;
+        temp = temp->next;
+    } while(temp != head);
+
+    return s;
+}
 //insert node
 void insertNode(){
     int pos, val, i, n = count();   
@@ -94,6 +108,19 @@ void insertNode(){
 
     printf("Node inserted with value %d successfully!\n", val);
 }
+// display
+void display(){
+    struct Node *temp=head;
+    if(head == NULL){
+        printf("List is empty !\n");
+        return;
+    }
+    do{
+        printf(" %d ->",temp->data);
+        temp = temp->next;
+    }while(temp!=head);
+    printf("\n");
+}
 
 int main(){
     int choice;
@@ -121,13 +148,32 @@ int main(){
         getchar();
         switch (choice){
             case 1:
+                create();
                 break;
-        case 14:
-            printf("Exitting ...\n");
-            break;    
-        default:
-            printf("Invalid choice!\n");
-            break;
+            case 2:
+                insertNode();
+                break;
+            case 3:
+                printf("NOt ready yet !\n");
+                break;
+            case 4:
+                Count=count();
+                printf("Total elements : %d\n",Count);
+                break;
+            case 5:
+                printf("Circular Linked list :");
+                display();
+                break;
+            case 6:
+                sM=Sum();
+                printf("Total elements : %d\n",sM);
+                break;
+            case 14:
+                printf("Exitting ...\n");
+                break;    
+            default:
+                printf("Invalid choice!\n");
+                break;
         }
 
     }while(choice != 14);
