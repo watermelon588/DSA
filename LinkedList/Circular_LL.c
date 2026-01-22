@@ -121,7 +121,84 @@ void display(){
     }while(temp!=head);
     printf("\n");
 }
-
+// delete
+int deleteNode (int pos){
+    struct Node *q=NULL;
+    struct Node *temp ;
+    int i,x=-1;
+    if(head == NULL){
+        printf("List Empty !\n");
+        return -1;
+    }
+    //validate position
+    int n = count();
+    if(pos < 1 || pos > n){
+        printf("Invalid position!\n");
+        return -1;
+    }
+    // 1. delete 1st node
+    if(pos==1) {
+        temp = head;
+        x = head -> data;
+        // 0nly one element !
+        if(head -> next = head){
+            head = NULL;
+            free(head);
+            return x;
+        }
+        // more than one node 
+        q= head;
+        while(q->next != head){
+            q = q->next;
+        }
+        q->next = head->next;
+        head = head->next;
+        free(temp);
+        return x;
+    }else{          // 2. delete other nodes
+        temp = head;
+        for(i=1;i<pos ;i++){
+            q= temp;
+            temp = temp->next;
+        }
+        q->next = temp->next;
+        x = temp ->data;
+        free(temp);
+        return x;
+    }
+}
+// max
+int Max(){
+    struct Node *temp = head;
+    if(head==NULL){
+        return 0;
+    }
+    int m= temp->data;
+    temp = temp->next;
+    do {
+        if(temp->data > m){
+            m = temp->data;
+        }
+        temp = temp->next;
+    } while(temp != head);
+    return m ;
+}
+// min
+int Min(){
+    struct Node *temp = head;
+    if(head==NULL){
+        return 0;
+    }
+    int m= temp->data;
+    temp = temp->next;
+    do {
+        if(temp->data < m){
+            m = temp->data;
+        }
+        temp = temp->next;
+    } while(temp != head);
+    return m ;
+}
 int main(){
     int choice;
     int mrg,res,srt,x,Count,mX,mN,sM,key,del,pos;
@@ -154,7 +231,14 @@ int main(){
                 insertNode();
                 break;
             case 3:
-                printf("NOt ready yet !\n");
+                printf("Enter position(1 base):");
+                scanf("%d",&pos);
+                del=deleteNode(pos);
+                if(del == -1){
+                    printf("Cannot delete !\n");
+                }else{
+                    printf("%d deleted successfully\n",del);
+                }
                 break;
             case 4:
                 Count=count();
@@ -167,6 +251,16 @@ int main(){
             case 6:
                 sM=Sum();
                 printf("Total elements : %d\n",sM);
+                break;
+            case 8:
+                mX=Max();
+                mN=Min();
+                if(mX==0){
+                    printf("List is empty!\n");
+                }else{
+                    printf("Maximum value is : %d\nMinimum value is : %d",mX,mN);
+                    printf("\n");
+                }
                 break;
             case 14:
                 printf("Exitting ...\n");
