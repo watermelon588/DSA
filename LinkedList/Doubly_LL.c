@@ -111,6 +111,66 @@ void insert(){
     }
     printf("Node inserted with val %d successfully!\n",val);  
 }
+// delete
+int deleteNode(int pos){
+    int i,n=count(),x;
+    struct Node *temp;
+    //position validate
+    if(pos<1 || pos>n){
+        printf("Invalid position!\n");
+        return -1;
+    }
+    if(head == NULL){
+        printf("List is empty !");
+        return -1;
+    }
+    // 1. pos == 1
+    if(pos==1){
+        temp = head;
+        head = head->next;
+        if(head != NULL){
+            head->prev=NULL;
+        }
+        x=temp->data;
+        free(temp);
+        return x;
+    }else{      // 2. pos != 1
+        temp = head;
+        for(i=1;i<pos;i++){
+            temp = temp->next;
+        }
+        temp->prev->next=temp->next;
+        if(temp->next!=NULL){
+            temp->next->prev=temp->prev;
+        }
+        x=temp->data;
+        free(temp);
+        return x;
+    }
+}
+// reverse
+void reverse(){
+    struct Node *temp = head;
+    struct Node *swap = NULL;
+
+    if(head == NULL){
+        printf("List is empty!\n");
+        return;
+    }
+
+    while(temp != NULL){
+        swap = temp->next;     // store next
+        temp->next = temp->prev;
+        temp->prev = swap;
+        temp = temp->prev;    // move to original next
+        if(temp!=NULL && temp->next==NULL){
+            head = temp;
+        }
+    }
+
+    printf("List reversed successfully!\n");
+}
+
 // display
 void display(){
     struct Node *temp=head;
@@ -175,12 +235,12 @@ int main(){
         printf("1. CREATE \n");
         printf("2. ADDNODE \n");
         printf("3. INSERT NODE\n");
-        printf("4. COUNT\n");
-        printf("5. DISPLAY \n");
-        printf("6. SUM\n");
-        printf("7. L SEARCH (Improved)\n");
+        printf("4. DELETENODE\n");
+        printf("5. COUNT\n");
+        printf("6. DISPLAY \n");
+        printf("7. SUM\n");
         printf("8. FIND MAX / MIN\n");
-        printf("9. CHECK IF SORTED\n");
+        printf("9. REVERSE\n");
         printf("10. REMOVE DUPLICATE\n");
         printf("11. REVERSE\n");
         printf("12. CONCATINATION(2 LL)\n");
@@ -203,14 +263,24 @@ int main(){
                 insert();
                 break;
             case 4:
+                printf("Enter position(1 base):");
+                scanf("%d",&pos);
+                del=deleteNode(pos);
+                if(del == -1){
+                    printf("Cannot delete !\n");
+                }else{
+                    printf("%d deleted successfully\n",del);
+                }
+                break;
+            case 5:
                 Count=count();
                 printf("Total elements : %d\n",Count);
                 break;
-            case 5:
+            case 6:
                 printf("Circular Linked list :");
                 display();
                 break;
-            case 6:
+            case 7:
                 sM=Sum();
                 printf("Total elements : %d\n",sM);
                 break;
@@ -223,6 +293,11 @@ int main(){
                     printf("Maximum value is : %d\nMinimum value is : %d",mX,mN);
                     printf("\n");
                 }
+                break;
+            case 9:
+                reverse();
+                printf("Reversed List :");
+                display();
                 break;
             case 14:
                 printf("Exitting ...\n");
