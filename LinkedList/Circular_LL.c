@@ -211,14 +211,8 @@ int main(){
         printf("4. COUNT\n");
         printf("5. DISPLAY \n");
         printf("6. SUM\n");
-        printf("7. L SEARCH (Improved)\n");
-        printf("8. FIND MAX / MIN\n");
-        printf("9. CHECK IF SORTED\n");
-        printf("10. REMOVE DUPLICATE\n");
-        printf("11. REVERSE\n");
-        printf("12. CONCATINATION(2 LL)\n");
-        printf("13. MERGE(2 sorted LL)\n");
-        printf("14. EXIT\n");
+        printf("7. FIND MAX / MIN\n");
+        printf("8. EXIT\n");
         printf("\n_________________________________________________________________________\n");
         printf("Enter choice : ");
         scanf("%d", &choice);
@@ -252,7 +246,7 @@ int main(){
                 sM=Sum();
                 printf("Total elements : %d\n",sM);
                 break;
-            case 8:
+            case 7:
                 mX=Max();
                 mN=Min();
                 if(mX==0){
@@ -262,7 +256,7 @@ int main(){
                     printf("\n");
                 }
                 break;
-            case 14:
+            case 8:
                 printf("Exitting ...\n");
                 break;    
             default:
@@ -270,6 +264,6 @@ int main(){
                 break;
         }
 
-    }while(choice != 14);
+    }while(choice != 8);
     return 0;
 }

@@ -1,13 +1,14 @@
 #include<stdio.h>
 #include<stdlib.h>
-// structure 
+
+// stucture
 struct Node{
     struct Node *prev;
     int data;
     struct Node *next;
 };
 struct Node *head;
-// create
+// create node
 void create(){
     int i,n;
     int arr[25];
@@ -26,53 +27,55 @@ void create(){
     //first node
     head = (struct Node *)malloc(sizeof(struct Node));
     head->data=arr[0];
-    head->prev=NULL;
-    head->next=NULL;
+    head->prev=head;
+    head->next=head;
     temp = head;
     //rest other nodes
     for(i=1;i<n;i++){
         newNode = (struct Node *)malloc(sizeof(struct Node));
         newNode->data=arr[i];
-        newNode->next=NULL;
+        newNode->next=head;
         newNode->prev = temp;
         temp->next=newNode;
         temp = newNode;
     }
-    printf("Doubly Linked list created successfully!\n");  
+    temp->next = head;
+    head->prev = temp;
+    printf("Circular Doubly Linked list created successfully!\n");  
 }
-// add
+// add node
 void Addnode(int x){
     struct Node *temp;
     struct Node *newNode;
     newNode=(struct Node *)malloc(sizeof(struct Node));
     newNode->data = x;
-    newNode->next = NULL;
     //if head == NULL
     if(head == NULL){
         head = newNode;
-        head->prev=NULL;
+        head->prev=head;
+        head->next=head;
         printf("Node added with val %d successfully!\n",x);
     }else{
         temp = head;
-        while(temp->next != NULL){
-            temp = temp ->next;
-        }
-        temp->next=newNode;
-        newNode->prev = temp;
+        temp->prev->next=newNode;
+        newNode->prev = temp->prev;
+        newNode->next=temp;
+        temp->prev = newNode;
         printf("Node added with val %d successfully!\n",x);
     }
 }
-//count
+// count
 int count(){
     struct Node *temp = head;
+    if(head == NULL) return 0;
     int cnt = 0;
-    while(temp!= NULL){
-        cnt ++;
+    do{
+        cnt++;
         temp = temp->next;
-    }
+    }while(temp!=head);
     return cnt;
 }
-// insert
+// insert node
 void insert(){
     int pos , val,i,n=count();
     printf("Enter position(1 base):");
@@ -92,7 +95,12 @@ void insert(){
     if(pos == 1){
         if(head == NULL){
             head = newNode;
+            head->prev=head;
+            head->next = head;
         }else{
+            temp = head;
+            temp->prev->next=newNode;
+            newNode->prev=temp->prev;
             newNode->next = head;
             head->prev = newNode;
             head=newNode;
@@ -104,14 +112,12 @@ void insert(){
         }
         newNode->prev=temp;
         newNode->next = temp->next;
-        if(temp->next!=NULL){
-            temp->next->prev=newNode;   //if next node is present then only modify
-        }
+        temp->next->prev=newNode;
         temp->next = newNode;
     }
     printf("Node inserted with val %d successfully!\n",val);  
 }
-// delete
+// delete node
 int deleteNode(int pos){
     int i,n=count(),x;
     struct Node *temp;
@@ -125,13 +131,22 @@ int deleteNode(int pos){
         return -1;
     }
     // 1. pos == 1
+
+    //  only one node
+    if(n == 1 && pos == 1){
+        x = head->data;
+        free(head);
+        head = NULL;
+        return x;
+    }
     if(pos==1){
         temp = head;
-        head = head->next;
-        if(head != NULL){
-            head->prev=NULL;
-        }
         x=temp->data;
+
+        head->prev->next = head->next;
+        head->next->prev = head->prev;
+        head = head->next;
+        
         free(temp);
         return x;
     }else{      // 2. pos != 1
@@ -140,59 +155,43 @@ int deleteNode(int pos){
             temp = temp->next;
         }
         temp->prev->next=temp->next;
-        if(temp->next!=NULL){
-            temp->next->prev=temp->prev;
-        }
+        temp->next->prev=temp->prev;
         x=temp->data;
         free(temp);
         return x;
     }
 }
-// reverse
-void reverse(){
-    struct Node *temp = head;
-    struct Node *swap = NULL;
-
-    if(head == NULL){
-        printf("List is empty!\n");
-        return;
-    }
-
-    while(temp != NULL){
-        swap = temp->next;     // store next
-        temp->next = temp->prev;
-        temp->prev = swap;
-        temp = temp->prev;    // move to original next
-        if(temp!=NULL && temp->next==NULL){
-            head = temp;
-        }
-    }
-
-    printf("List reversed successfully!\n");
-}
-
 // display
 void display(){
     struct Node *temp=head;
-    while(temp != NULL){
-        printf("%d",temp->data);
-        if(temp->next != NULL)
-            printf(" <-> ");
-        temp = temp->next;
+    if(head == NULL){
+        printf("List is empty !\n");
+        return;
     }
+    do{
+        printf("%d",temp->data);
+        temp = temp->next;
+        if(temp != head)
+            printf(" <-> ");
+        
+    }while(temp!=head);
     printf("\n");
 }
-//sum
+// sum
 int Sum(){
-    int s=0;
+    if(head == NULL) return 0;
+
+    int s = 0;
     struct Node *temp = head;
-    while(temp !=NULL){
-        s += temp->data;
-        temp=temp->next;
-    }
-    return s ;
+
+    do{
+        s+=temp->data;
+        temp = temp->next;
+    } while(temp != head);
+
+    return s;
 }
-// max
+// max 
 int Max(){
     struct Node *temp = head;
     if(head==NULL){
@@ -200,13 +199,12 @@ int Max(){
     }
     int m= temp->data;
     temp = temp->next;
-    while(temp !=NULL){
-        if(temp->data>m){
-            m= temp->data;
-            
+    do {
+        if(temp->data > m){
+            m = temp->data;
         }
-        temp=temp->next;
-    }
+        temp = temp->next;
+    } while(temp != head);
     return m ;
 }
 // min
@@ -217,13 +215,12 @@ int Min(){
     }
     int m= temp->data;
     temp = temp->next;
-    while(temp !=NULL){
-        if(temp->data<m){
-            m= temp->data;
-            
+    do {
+        if(temp->data < m){
+            m = temp->data;
         }
-        temp=temp->next; 
-    }
+        temp = temp->next;
+    } while(temp != head);
     return m ;
 }
 int main(){
@@ -240,8 +237,7 @@ int main(){
         printf("6. DISPLAY \n");
         printf("7. SUM\n");
         printf("8. FIND MAX / MIN\n");
-        printf("9. REVERSE\n");
-        printf("10. EXIT\n");
+        printf("9. EXIT\n");
         printf("\n_________________________________________________________________________\n");
         printf("Enter choice : ");
         scanf("%d", &choice);
@@ -278,7 +274,7 @@ int main(){
                 break;
             case 7:
                 sM=Sum();
-                printf("Total elements : %d\n",sM);
+                printf("Sum of elements : %d\n",sM);
                 break;
             case 8:
                 mX=Max();
@@ -291,11 +287,6 @@ int main(){
                 }
                 break;
             case 9:
-                reverse();
-                printf("Reversed List :");
-                display();
-                break;
-            case 10:
                 printf("Exitting ...\n");
                 break;    
             default:
@@ -303,7 +294,7 @@ int main(){
                 break;
         }
 
-    }while(choice != 10);
+    }while(choice != 9);
 
     return 0;
 }
