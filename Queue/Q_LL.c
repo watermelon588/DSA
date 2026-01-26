@@ -19,7 +19,7 @@ void enqueue(int value) {
     }
     newNode->data = value;
     newNode->next = NULL;
-    if (rear == NULL) {
+    if (front == NULL) {
         front = rear = newNode;
     } else {
         rear->next = newNode;
@@ -40,7 +40,15 @@ void dequeue() {
     if (front == NULL) rear = NULL; // if queue becomes empty
     free(temp);
 }
-
+// display
+void display(){
+    struct Node* temp = front;
+    while(temp!=NULL){
+        printf("%d ->",temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
 // isEmpty operation
 void isEmpty() {
     if (front == NULL)
@@ -48,12 +56,11 @@ void isEmpty() {
     else
         printf("Queue is not empty\n");
 }
-
 int main() {
     int choice, value;
     while (1) {
         printf("\n--- Queue Menu ---\n");
-        printf("1. Enqueue\n2. Dequeue\n3. isEmpty\n4. Exit\n");
+        printf("1. Enqueue\n2. Dequeue\n3. Display\n4. isEmpty\n5. Exit\n");
         printf("Enter choice: ");
         scanf("%d", &choice);
 
@@ -67,9 +74,12 @@ int main() {
                 dequeue();
                 break;
             case 3:
-                isEmpty();
+                display();
                 break;
             case 4:
+                isEmpty();
+                break;
+            case 5:
                 exit(0);
             default:
                 printf("Invalid choice!\n");
