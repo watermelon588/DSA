@@ -18,13 +18,16 @@ void push(char x){
     top=newNode;
 }
 // pop
-void pop(){
+char pop(){
     struct Node *temp=top;
+    char x;
     if(top == NULL){
-        return ;
+        return -1;
     }else{
         top=top->next;
+        x = temp ->data;
         free(temp);
+        return x;
     }
 }
 // is empty
@@ -35,16 +38,28 @@ int isEmpty(){
         return 0;
     }
 }
-// parenthesis matching
+// is matching check 
+int isMatchingPair(char open, char close){
+    if(open == '(' && close == ')') return 1;
+    if(open == '{' && close == '}') return 1;
+    if(open == '[' && close == ']') return 1;
+    return 0;
+}
+// parenthesis matching 
+// for every kind of paranthesis [{(...)}]
 int isBalanced(char exp[]){
     int i;
+    char x;
 
     for(i=0;exp[i]!='\0';i++){
-        if(exp[i]=='('){
+        if(exp[i] == '(' || exp[i] == '{' || exp[i] == '['){
             push(exp[i]);
-        }else if(exp[i]==')'){
+        }else if(exp[i] == ')' || exp[i] == '}' || exp[i] == ']'){
             if(isEmpty()){return 0;}
-            pop();
+            x = pop();
+
+            if(!isMatchingPair(x, exp[i]))
+                return 0;
         }
     }
     if(isEmpty()){
